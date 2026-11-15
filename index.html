@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Explorer - Catálogo Open Source</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090d14;color:#e6edf3;font-family:Inter,Arial,sans-serif}
+header{padding:38px 7%;background:linear-gradient(130deg,#111d32,#101522 65%,#172b25);border-bottom:1px solid #293344}
+header h1{font-size:35px;margin:0 0 10px}
+header p{color:#a8b5c7;margin:0}
+main{max-width:1200px;margin:auto;padding:28px 20px}
+.search{width:100%;padding:17px 19px;background:#111925;border:1px solid #303d50;border-radius:12px;color:white;font-size:15px;outline:none;margin-bottom:25px}
+.search:focus{border-color:#3fb950}
+.category{margin-bottom:30px}
+.category h2{font-size:20px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #293344}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:11px}
+a.card{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px;background:#111925;border:1px solid #273345;border-radius:10px;text-decoration:none;color:#e6edf3;transition:.2s}
+a.card:hover{background:#192536;border-color:#3fb950;transform:translateY(-2px)}
+.card small{color:#8192a8;display:block;margin-top:5px;font-size:11px}
+.arrow{color:#3fb950;font-size:20px}
+footer{text-align:center;color:#8192a8;padding:35px}
+.hidden{display:none}
+.count{color:#8b9bb0;font-size:13px;margin-bottom:18px}
+</style>
+</head>
+<body>
+<header>
+<h1>⌘ GitHub Explorer</h1>
+<p>Explore milhares de projetos open source, jogos, IAs, ferramentas e experiências.</p>
+</header>
+<main>
+<input class="search" id="search" placeholder="⌕ Pesquisar jogos, IA, sites, emuladores..." oninput="filter()">
+<div class="count" id="count"></div>
+<div id="catalog"></div>
+</main>
+<footer>GitHub Explorer · Catálogo de projetos open source</footer>
+<script>
+const data={
+"🎮 Jogos":[
+["Jogos open source","open-source-game"],["Jogos em geral","game"],["Jogos 3D","3d-game"],["Jogos 2D","2d-game"],["Jogos FPS","fps-game"],["Jogos de navegador","browser-game"],["Jogos multiplayer","multiplayer-game"],["Mundo aberto","open-world"],["Jogos de terror","horror-game"],["Jogos de corrida","racing-game"],["Sobrevivência","survival-game"],["Estratégia","strategy-game"],["Sandbox","sandbox-game"],["Simulação","simulation-game"],["Jogos HTML5","html5-game"],["Jogos WebGL","webgl-game"],["RPG","rpg-game"],["Plataforma","platformer"],["Godot","godot"],["Unity","unity"]
+],
+"🤖 Inteligência Artificial":[
+["Inteligência artificial","artificial-intelligence"],["IA local","local-ai"],["LLM","llm"],["Chatbots","chatbot"],["Agentes de IA","ai-agent"],["Assistentes de IA","ai-assistant"],["IA para programação","ai-coding"],["Geração de imagens","ai-image-generation"],["Geração de vídeos","ai-video-generation"],["Reconhecimento de voz","speech-recognition"],["Text to Speech","text-to-speech"],["Machine Learning","machine-learning"],["Deep Learning","deep-learning"],["Visão computacional","computer-vision"],["IA generativa","generative-ai"],["Stable Diffusion","stable-diffusion"],["Ollama","ollama"],["RAG","rag"]
+],
+"🌐 Sites e aplicações web":[
+["Sites","website"],["Aplicações web","web-app"],["Projetos web","web-project"],["Ferramentas web","web-tools"],["Landing pages","landing-page"],["Dashboards","dashboard"],["Portfólios","portfolio"],["Redes sociais","social-network"],["E-commerce","ecommerce"],["Blogs","blog"],["Fóruns","forum"],["Wikis","wiki"],["SaaS","saas"],["Progressive Web Apps","pwa"],["HTML","html"],["JavaScript","javascript"],["Web Design","web-design"],["Web Components","web-components"]
+],
+"🕹️ Webports e jogos no navegador":[
+["Web Ports","web-port"],["Browser Ports","browser-ports"],["Game Ports","game-port"],["Jogos WebAssembly","wasm-game"],["Emscripten","emscripten"],["DOSBox","dosbox"],["Emuladores web","web-emulator"],["Jogos HTML5","html5-games"],["WebGL","webgl"]
+],
+"💻 Aplicativos Windows e desktop":[
+["Aplicativos Windows","windows-app"],["Desktop Apps","desktop-app"],["Software open source","open-source-software"],["Electron","electron"],["Tauri","tauri"],["Aplicativos Python","python-app"],["Qt","qt"],["Gerenciadores de arquivos","file-manager"],["Navegadores","browser"],["Media Players","media-player"],["Gerenciadores de downloads","download-manager"],["Produtividade","productivity-app"],["Launchers","launcher"]
+],
+"🧑‍💻 Desenvolvimento":[
+["Developer Tools","developer-tools"],["Editores de código","code-editor"],["IDEs","ide"],["Terminais","terminal"],["CLI","cli"],["Automação","automation"],["Extensões VS Code","vscode-extension"],["Bibliotecas JavaScript","javascript-library"],["Frameworks","framework"],["APIs","api"],["Bancos de dados","database"],["Servidores","server"],["Docker","docker"],["Node.js","nodejs"],["Python","python"],["Rust","rust"]
+],
+"🎛️ Emuladores e máquinas virtuais":[
+["Emuladores","emulator"],["Máquinas virtuais","virtual-machine"],["Retro Gaming","retro-gaming"],["Android Emulator","android-emulator"],["PlayStation Emulator","playstation-emulator"],["PS2 Emulator","ps2-emulator"],["Nintendo Emulator","nintendo-emulator"],["Game Boy Emulator","gameboy-emulator"],["DOSBox","dosbox"],["Virtualização","virtualization"],["QEMU","qemu"],["Sistemas operacionais","operating-system"]
+],
+"🚗 Simuladores e 3D":[
+["Simuladores","simulator"],["Direção","driving-simulator"],["Voo","flight-simulator"],["Carros","car-simulator"],["Física","physics-simulation"],["Espaço","space-simulation"],["Cidades","city-simulation"],["Mundos virtuais","virtual-world"],["Realidade virtual","virtual-reality"],["Realidade aumentada","augmented-reality"],["Three.js","three-js"],["Babylon.js","babylonjs"],["WebGL","webgl"],["Motores de física","physics-engine"],["Geração procedural","procedural-generation"]
+],
+"🛡️ Segurança e redes":[
+["Cibersegurança","cybersecurity"],["Pentest","penetration-testing"],["Segurança de redes","network-security"],["Ferramentas de rede","network-tools"],["Análise de pacotes","packet-analysis"],["Privacidade","privacy"],["Criptografia","cryptography"],["Firewalls","firewall"],["Linux Security","linux-security"],["OSINT","osint"],["Laboratórios de segurança","security-labs"]
+],
+"🎨 Design e interfaces":[
+["UI Design","ui-design"],["UX Design","ux-design"],["Design Systems","design-system"],["Templates HTML","html-template"],["Templates CSS","css-template"],["Tailwind CSS","tailwindcss"],["Componentes UI","component-library"],["Ícones","icons"],["Animações CSS","css-animation"],["Efeitos visuais","visual-effects"],["Gráficos","chart-library"],["Fontes","fonts"]
+],
+"🌍 Mapas e geografia":[
+["OpenStreetMap","openstreetmap"],["Mapas 3D","3d-maps"],["Mapas interativos","interactive-map"],["Mapas mundiais","world-map"],["Geolocalização","geolocation"],["Geoespacial","geospatial"],["Mapbox","mapbox"],["Leaflet","leaflet"],["Cesium","cesium"],["Globos 3D","globe"],["GIS","gis"]
+],
+"🎵 Música, áudio e vídeo":[
+["Players de música","music-player"],["Editores de áudio","audio-editor"],["Editores de vídeo","video-editor"],["Players de vídeo","video-player"],["Efeitos sonoros","sound-effects"],["Síntese de áudio","audio-synthesis"],["Visualizadores de música","music-visualizer"],["Streaming","streaming"],["Conversores de mídia","media-converter"],["FFmpeg","ffmpeg"]
+],
+"🔬 Ciência e experimentos":[
+["Projetos experimentais","experimental"],["Física","physics"],["Astronomia","astronomy"],["Espaço","space"],["Robótica","robotics"],["Ciência de dados","data-science"],["Visualização de dados","data-visualization"],["Redes neurais","neural-network"],["Computação científica","scientific-computing"],["Arte generativa","generative-art"],["Hologramas","hologram"]
+]
+};
+const extras=[
+["Awesome","https://github.com/sindresorhus/awesome"],
+["Awesome Selfhosted","https://github.com/awesome-selfhosted/awesome-selfhosted"],
+["Free Programming Books","https://github.com/EbookFoundation/free-programming-books"],
+["Public APIs","https://github.com/public-apis/public-apis"],
+["Awesome Games","https://github.com/leereilly/games"],
+["Awesome Game Development","https://github.com/ellisonleao/magictools"],
+["Open Source Games","https://github.com/bobeff/open-source-games"],
+["Genizy Web Ports","https://github.com/genizy/web-ports"],
+["Ultimate Catalog of Web Game Ports","https://github.com/Carter54git/Ultimate-Catalog-Of-Web-Game-Ports"],
+["Awesome Browser Game Ports","https://github.com/bitburner/Awesome-Browser-Game-Ports"]
+];
+function render(){
+let html="";
+for(const [category,items] of Object.entries(data)){
+html+=`<section class="category"><h2>${category}</h2><div class="cards">`;
+for(const [name,slug] of items){
+html+=`<a class="card" target="_blank" rel="noopener" href="https://github.com/topics/${slug}"><span>${name}<small>github.com/topics/${slug}</small></span><span class="arrow">↗</span></a>`;
+}
+html+="</div></section>";
+}
+html+=`<section class="category"><h2>⭐ Grandes catálogos e coleções</h2><div class="cards">`;
+for(const [name,url] of extras){
+html+=`<a class="card" target="_blank" rel="noopener" href="${url}"><span>${name}<small>${url.replace("https://","")}</small></span><span class="arrow">↗</span></a>`;
+}
+html+="</div></section>";
+document.getElementById("catalog").innerHTML=html;
+filter();
+}
+function filter(){
+const q=document.getElementById("search").value.toLowerCase();
+let total=0;
+document.querySelectorAll(".category").forEach(section=>{
+let visible=0;
+section.querySelectorAll(".card").forEach(card=>{
+const show=card.innerText.toLowerCase().includes(q);
+card.classList.toggle("hidden",!show);
+if(show){visible++;total++;}
+});
+section.classList.toggle("hidden",visible===0);
+});
+document.getElementById("count").textContent=total+" tópicos e coleções encontrados";
+}
+render();
+</script>
+</body>
+</html>
